@@ -1,5 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addUser } from "../redux/apiCalls";
 const Container = styled.div`
   flex: 4;
 `;
@@ -54,54 +57,97 @@ const NewUserButton = styled.button`
 `;
 
 const NewUser = () => {
+  const [inputs, setInputs] = useState({});
+  const dispatch = useDispatch();
+  const handleChange = (e) => {
+    setInputs((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  };
+  const handleClick = (e) =>{
+    e.preventDefault();
+    const user = {...inputs};
+    addUser(user, dispatch)
+  }
+  console.log(inputs);
   return (
     <Container>
       <NewUserTitle>New User</NewUserTitle>
       <NewUserForm>
         <NewUserItem>
-          <lable>UserName</lable>
-          <input type="text" placeholder="john" />
+          <lable>Tên tài khoản</lable>
+          <input
+            type="text"
+            name="username"
+            placeholder="VanA"
+            onChange={handleChange}
+          />
         </NewUserItem>
         <NewUserItem>
-          <lable>Full Name</lable>
-          <input type="text" placeholder="john smith" />
+          <lable>Tên người dùng</lable>
+          <input
+            type="text"
+            name="fullname"
+            placeholder="Nguyễn Văn A"
+            onChange={handleChange}
+          />
         </NewUserItem>
         <NewUserItem>
-          <lable>Full Name</lable>
-          <input type="email" placeholder="admin@email.com" />
+          <lable>Email</lable>
+          <input
+            type="email"
+            name="email"
+            placeholder="admin@email.com"
+            onChange={handleChange}
+          />
         </NewUserItem>
         <NewUserItem>
-          <lable>Password</lable>
-          <input type="email" placeholder="password" />
+          <lable>Mật khẩu</lable>
+          <input
+            type="password"
+            name="password"
+            placeholder="Mật khẩu"
+            onChange={handleChange}
+          />
         </NewUserItem>
         <NewUserItem>
-          <lable>Phone</lable>
-          <input type="number" placeholder="0833149078" />
+          <lable>Số điện thoại</lable>
+          <input
+            type="number"
+            name="phonenumber"
+            placeholder="0123456789"
+            onChange={handleChange}
+          />
         </NewUserItem>
         <NewUserItem>
-          <lable>Dia chi</lable>
-          <input type="email" placeholder="HN" />
+          <lable>Địa chỉ</lable>
+          <input
+            type="text"
+            name="address"
+            placeholder="Long Biên - Hà Nội"
+            onChange={handleChange}
+          />
         </NewUserItem>
         <NewUserItem>
-          <lable>Gender</lable>
+          <lable>Giới tính</lable>
           <NewUserGender>
             <input type="radio" name="gender" id="male" value="male" />
-            <label for="male">Male</label>
+            <label for="male">Nam</label>
             <input type="radio" name="gender" id="female" value="female" />
-            <label for="female">Female</label>
+            <label for="female">Nữ</label>
             <input type="radio" name="gender" id="other" value="other" />
-            <label for="other">Other</label>
+            <label for="other">Khác</label>
           </NewUserGender>
         </NewUserItem>
         <NewUserItem>
-          <label>Active</label>
+          <label>Hoạt động</label>
           <NewUserSelect name="active" id="active">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
+            <option value="yes">Có</option>
+            <option value="no">Không</option>
           </NewUserSelect>
         </NewUserItem>
         <NewUserItem>
-          <NewUserButton>Create</NewUserButton>
+          <NewUserButton onClick={handleClick}>Create</NewUserButton>
         </NewUserItem>
       </NewUserForm>
     </Container>

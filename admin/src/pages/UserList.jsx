@@ -5,6 +5,9 @@ import { DeleteOutline } from "@material-ui/icons";
 import { userRows } from "../dummyData";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getUser } from "../redux/apiCalls";
 const Container = styled.div`
   flex: 4;
 `;
@@ -34,12 +37,15 @@ const UserListDelete = styled(DeleteOutline)`
 `;
 
 const UserList = () => {
-  const [data, setData] = useState(userRows);
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
-  };
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.createUser.users);
+  useEffect(() => {
+    getUser(dispatch);
+  }, [dispatch]);
+  const handleDelete = (id) => {};
+  console.log(users);
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
+    { field: "_id", headerName: "ID", width: 200},
     {
       field: "user",
       headerName: "User",
@@ -53,18 +59,11 @@ const UserList = () => {
         );
       },
     },
-    { field: "email", headerName: "Email", width: 130 },
+    { field: "fullname", headerName: "Tên đầy đủ", width: 200 },
     {
-      field: "status",
-      headerName: "Status",
-      width: 90,
-    },
-    {
-      field: "transaction",
-      headerName: "Transaction Volume",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      width: 160,
+      field: "email",
+      headerName: "Email",
+      width: 220,
     },
     {
       field: "action",
@@ -73,10 +72,10 @@ const UserList = () => {
       renderCell: (params) => {
         return (
           <div>
-            <Link to={"/user/" + params.row.id}>
+            <Link to={"/user/" + params.row._id}>
               <UserListEdit>Edit</UserListEdit>
             </Link>
-            <UserListDelete onClick={() => handleDelete(params.row.id)} />
+            <UserListDelete onClick={() => handleDelete(params.row._id)} />
           </div>
         );
       },
@@ -87,10 +86,11 @@ const UserList = () => {
     <Container>
       <div style={{ height: 400, width: "100%" }}>
         <DataGrid
-          rows={data}
+          rows={users}
           disableSelectionOnClick
           columns={columns}
-          pageSize={5}
+          getRowId={(row) => row._id}
+          pageSize={10}
           rowsPerPageOptions={[5]}
           checkboxSelection
         />

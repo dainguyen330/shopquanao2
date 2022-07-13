@@ -133,9 +133,12 @@ const ProductButton = styled.button`
 const Product = () => {
   const location = useLocation();
   const productId = location.pathname.split("/")[2];
+  const products = useSelector((state)=>state.product.products)
   const product = useSelector((state) =>
     state.product.products.find((product) => product._id === productId)
   );
+  console.log(product)
+  console.log(products)
   return (
     <Container>
       <ProductTitleContainer>
@@ -163,7 +166,7 @@ const Product = () => {
           </ProductInfoTop>
           <ProductInfoBottom>
             <ProductInfoItem>
-              <ProductInfoKey>ID:</ProductInfoKey>
+              <ProductInfoKey>ID: </ProductInfoKey>
               <ProductInfoValue>{product._id}</ProductInfoValue>
             </ProductInfoItem>
             <ProductInfoItem>

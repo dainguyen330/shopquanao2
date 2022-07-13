@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { Publish } from "@material-ui/icons";
 import styled, { css } from "styled-components";
 import app from "../firebase";
 import {
@@ -12,9 +13,15 @@ import { addProduct } from "../redux/apiCalls";
 import { useDispatch } from "react-redux";
 const Container = styled.div`
   flex: 4;
+  display: flex;
+`;
+const Right = styled.div`
+  flex: 2;
+  padding-top: 40px;
 `;
 const AddProductForm = styled.form`
   margin-top: 10px;
+  flex: 1;
 `;
 const AddProductItem = styled.div`
   width: 250px;
@@ -43,11 +50,27 @@ const AddProductButton = styled.button`
   font-weight: 600;
   cursor: pointer;
 `;
+const AddProductUpload = styled.div`
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+
+`;
+const AddProductImg = styled.img`
+  width: 300px;
+  height: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-right: 20px;
+`;
 const AddProductTitle = styled.h1``;
 const NewProduct = () => {
   const [inputs, setInputs] = useState({});
   const [file, setFiles] = useState(null);
   const [cat, setCat] = useState([]);
+  const [url, setUrl] = useState(
+    "https://thumbs.dreamstime.com/z/default-profile-picture-avatar-photo-placeholder-vector-illustration-default-profile-picture-avatar-photo-placeholder-vector-189495158.jpg"
+  );
   const dispatch = useDispatch();
   const handleChange = (e) => {
     setInputs((prev) => {
@@ -57,7 +80,7 @@ const NewProduct = () => {
   const handleCat = (e) => {
     setCat(e.target.value.split(","));
   };
-  const handleClick = (e) => {
+  const handleURL = (e) => {
     e.preventDefault();
     const fileName = new Date().getTime() + file.name;
     const storage = getStorage(app);
@@ -92,23 +115,32 @@ const NewProduct = () => {
         // Handle successful uploads on complete
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          const product = { ...inputs, img: downloadURL, categories: cat };
-          addProduct(product, dispatch);
+          console.log("File available at", downloadURL);
+          setUrl(downloadURL);
         });
       }
     );
   };
+  const handleClick = (e) => {
+    e.preventDefault();
+    const product = { ...inputs, img: url, categories: cat };
+    addProduct(product, dispatch);
+  };
+
   return (
     <Container>
-      <AddProductTitle>New Product</AddProductTitle>
       <AddProductForm>
+        <AddProductTitle>New Product</AddProductTitle>
         <AddProductItem>
-          <label>Image</label>
-          <input
-            type="file"
-            id="file"
-            onChange={(e) => setFiles(e.target.files[0])}
-          />
+          <AddProductUpload>
+            {/* <label>Image</label> */}
+            <input
+              type="file"
+              id="file"
+              onChange={(e) => setFiles(e.target.files[0])}
+            />
+            <Publish onClick={handleURL} />
+          </AddProductUpload>
         </AddProductItem>
         <AddProductItem>
           <label>Title</label>
@@ -150,10 +182,11 @@ const NewProduct = () => {
         </AddProductItem>
         <AddProductButton onClick={handleClick}>Create</AddProductButton>
       </AddProductForm>
+      <Right>
+        <AddProductImg src={url} />
+      </Right>
     </Container>
   );
 };
 
 export default NewProduct;
-
-

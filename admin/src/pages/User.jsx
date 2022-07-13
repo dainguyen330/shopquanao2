@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   PermIdentity,
   CalendarToday,
@@ -9,6 +9,7 @@ import {
   MailOutline,
   Publish,
 } from "@material-ui/icons";
+import { useSelector } from "react-redux";
 const Container = styled.div`
   flex: 4;
   padding: 20px;
@@ -139,19 +140,27 @@ const UserUpdateButton = styled.button`
   font-weight: 600;
 `;
 const User = () => {
+  const location = useLocation();
+  const userID = location.pathname.split("/")[2];
+  const users = useSelector((state)=>state.createUser.users)
+  const user = (users.find((user)=>user._id === userID))
+
+  console.log(userID);
+  console.log(user);
   return (
     <Container>
       <UserTitleContainer>
         <UserTitle>Edit User</UserTitle>
-        <Link to="/newUser"><UserAddButton>Create</UserAddButton></Link>
+        <Link to="/newUser">
+          <UserAddButton>Create</UserAddButton>
+        </Link>
       </UserTitleContainer>
       <UserContainer>
         <UserShow>
           <UserShowTop>
             <UserShowImg src="https://play-lh.googleusercontent.com/ObdbSatQvNUymufVs3vL5YmhGdvs3w5vvTciaGLFQOZoREVAEIIueioFOrWk9je_fqxR=w240-h480-rw"></UserShowImg>
             <UserShowTopTitle>
-              <UserShowUserName>Dai</UserShowUserName>
-              <UserShowUserTitle>Ai</UserShowUserTitle>
+              <UserShowUserName>{user.username}</UserShowUserName>
             </UserShowTopTitle>
           </UserShowTop>
           <UserShowBottom>
@@ -160,7 +169,7 @@ const User = () => {
               <UserShowIcon>
                 <PermIdentity />
               </UserShowIcon>
-              <UserShowInfoTitle>dai</UserShowInfoTitle>
+              <UserShowInfoTitle>{user.fullname}</UserShowInfoTitle>
             </UserShowInfo>
             <UserShowInfo>
               <UserShowIcon>
@@ -173,19 +182,19 @@ const User = () => {
               <UserShowIcon>
                 <PhoneAndroid />
               </UserShowIcon>
-              <UserShowInfoTitle>0833149078</UserShowInfoTitle>
+              <UserShowInfoTitle>{user.phonenumber}</UserShowInfoTitle>
             </UserShowInfo>
             <UserShowInfo>
               <UserShowIcon>
                 <MailOutline />
               </UserShowIcon>
-              <UserShowInfoTitle>abc@gmail.com</UserShowInfoTitle>
+              <UserShowInfoTitle>{user.email}</UserShowInfoTitle>
             </UserShowInfo>
             <UserShowInfo>
               <UserShowIcon>
                 <LocationSearching />
               </UserShowIcon>
-              <UserShowInfoTitle>HN</UserShowInfoTitle>
+              <UserShowInfoTitle>{user.address}</UserShowInfoTitle>
             </UserShowInfo>
           </UserShowBottom>
         </UserShow>
@@ -197,7 +206,7 @@ const User = () => {
                 <label>User Name</label>
                 <UserUpdateInput
                   type="text"
-                  placeholder="QuangDai"
+                  placeholder={user.username}
                 ></UserUpdateInput>
               </UserUpdateItem>
               <UserUpdateItem>
